@@ -1,7 +1,6 @@
+import { dirname } from 'path';
 import puppeteer, { ScreenshotOptions } from 'puppeteer';
 import url from 'url';
-import { dirname } from 'path';
-
 import { Config } from './config';
 
 type SerializedResponse = {
@@ -38,7 +37,10 @@ export class Renderer {
       return true;
     }
 
-    if (this.config.restrictedUrlPattern && requestUrl.match(new RegExp(this.config.restrictedUrlPattern))) {
+    if (
+      this.config.restrictedUrlPattern &&
+      requestUrl.match(new RegExp(this.config.restrictedUrlPattern))
+    ) {
       return true;
     }
 
@@ -103,6 +105,11 @@ export class Renderer {
 
     if (isMobile) {
       page.setUserAgent(MOBILE_USERAGENT);
+      await page.setViewport({
+        width: this.config.mobileViewport.width,
+        height: this.config.mobileViewport.height,
+        isMobile,
+      });
     }
 
     if (timezoneId) {
