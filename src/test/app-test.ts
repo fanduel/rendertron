@@ -245,7 +245,7 @@ test('whitelist ensures other urls do not get rendered', async (t: ExecutionCont
     timeout: 10000,
     port: '3000',
     host: '0.0.0.0',
-    width: 1000,
+    width: 1024,
     height: 1000,
     reqHeaders: {},
     headers: {},
@@ -254,7 +254,7 @@ test('whitelist ensures other urls do not get rendered', async (t: ExecutionCont
     closeBrowser: false,
     restrictedUrlPattern: null,
     mobileViewport: {
-      width: 500,
+      width: 1000,
       height: 1000,
     },
   };
@@ -282,7 +282,7 @@ test('endpont for invalidating memory cache works if configured', async (t: Exec
     timeout: 10000,
     port: '3000',
     host: '0.0.0.0',
-    width: 1000,
+    width: 1024,
     height: 1000,
     reqHeaders: {},
     headers: {},
@@ -291,7 +291,7 @@ test('endpont for invalidating memory cache works if configured', async (t: Exec
     closeBrowser: false,
     restrictedUrlPattern: null,
     mobileViewport: {
-      width: 500,
+      width: 1000,
       height: 1000,
     },
   };
@@ -341,7 +341,7 @@ test('endpont for invalidating filesystem cache works if configured', async (t: 
     closeBrowser: false,
     restrictedUrlPattern: null,
     mobileViewport: {
-      width: 500,
+      width: 1000,
       height: 1000,
     },
   };
@@ -396,7 +396,7 @@ test('http header should be set via config', async (t: ExecutionContext) => {
     closeBrowser: false,
     restrictedUrlPattern: null,
     mobileViewport: {
-      width: 500,
+      width: 1000,
       height: 1000,
     },
   };
@@ -419,7 +419,7 @@ test.serial(
       timeout: 10000,
       port: '3000',
       host: '0.0.0.0',
-      width: 1000,
+      width: 1024,
       height: 1000,
       reqHeaders: {
         Referer: 'http://example.com/',
@@ -430,7 +430,7 @@ test.serial(
       closeBrowser: false,
       restrictedUrlPattern: null,
       mobileViewport: {
-        width: 500,
+        width: 1000,
         height: 1000,
       },
     };
@@ -487,7 +487,7 @@ test.serial(
       closeBrowser: false,
       restrictedUrlPattern: null,
       mobileViewport: {
-        width: 500,
+        width: 1000,
         height: 1000,
       },
     };
@@ -570,7 +570,7 @@ test('urls mathing pattern are restricted', async (t) => {
     closeBrowser: false,
     restrictedUrlPattern: '.*(\\.test.html)($|\\?)',
     mobileViewport: {
-      width: 500,
+      width: 1000,
       height: 1000,
     },
   };
