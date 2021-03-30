@@ -332,7 +332,7 @@ test('endpont for invalidating filesystem cache works if configured', async (t: 
     timeout: 10000,
     port: '3000',
     host: '0.0.0.0',
-    width: 1024,
+    width: 1000,
     height: 1000,
     reqHeaders: {},
     headers: {},
@@ -385,7 +385,7 @@ test('http header should be set via config', async (t: ExecutionContext) => {
     timeout: 10000,
     port: '3000',
     host: '0.0.0.0',
-    width: 1024,
+    width: 1000,
     height: 1000,
     reqHeaders: {
       Referer: 'http://example.com/',
@@ -419,7 +419,7 @@ test.serial(
       timeout: 10000,
       port: '3000',
       host: '0.0.0.0',
-      width: 1024,
+      width: 1000,
       height: 1000,
       reqHeaders: {
         Referer: 'http://example.com/',
@@ -476,7 +476,7 @@ test.serial(
       timeout: 10000,
       port: '3000',
       host: '0.0.0.0',
-      width: 1024,
+      width: 1000,
       height: 1000,
       headers: {},
       reqHeaders: {
@@ -559,7 +559,7 @@ test('urls mathing pattern are restricted', async (t) => {
     timeout: 10000,
     port: '3000',
     host: '0.0.0.0',
-    width: 1024,
+    width: 1000,
     height: 1000,
     headers: {},
     reqHeaders: {

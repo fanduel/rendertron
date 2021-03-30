@@ -56,7 +56,7 @@ export class ConfigManager {
     timeout: 10000,
     port: '3000',
     host: '0.0.0.0',
-    width: 1024,
+    width: 1000,
     height: 1000,
     reqHeaders: {},
     headers: {},
