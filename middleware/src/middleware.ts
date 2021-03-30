@@ -166,6 +166,7 @@ export function makeMiddleware(options: Options): express.Handler {
 
   return function rendertronMiddleware(req, res, next) {
     const ua = req.headers['user-agent'];
+    const isMobileUserAgent = ua && ua.includes('Mobile' || 'Android');
     if (
       ua === undefined ||
       !userAgentPattern.test(ua) ||
@@ -181,6 +182,9 @@ export function makeMiddleware(options: Options): express.Handler {
         : req.get('host');
     const incomingUrl = req.protocol + '://' + host + req.originalUrl;
     let renderUrl = proxyUrl + encodeURIComponent(incomingUrl);
+    if (isMobileUserAgent) {
+      renderUrl += '/?mobile';
+    }
     if (injectShadyDom) {
       renderUrl += '?wc-inject-shadydom=true';
     }

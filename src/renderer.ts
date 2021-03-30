@@ -1,7 +1,6 @@
+import { dirname } from 'path';
 import puppeteer, { ScreenshotOptions } from 'puppeteer';
 import url from 'url';
-import { dirname } from 'path';
-
 import { Config } from './config';
 
 type SerializedResponse = {
@@ -38,7 +37,10 @@ export class Renderer {
       return true;
     }
 
-    if (this.config.restrictedUrlPattern && requestUrl.match(new RegExp(this.config.restrictedUrlPattern))) {
+    if (
+      this.config.restrictedUrlPattern &&
+      requestUrl.match(new RegExp(this.config.restrictedUrlPattern))
+    ) {
       return true;
     }
 
@@ -95,12 +97,12 @@ export class Renderer {
 
     // Page may reload when setting isMobile
     // https://github.com/GoogleChrome/puppeteer/blob/v1.10.0/docs/api.md#pagesetviewportviewport
+
     await page.setViewport({
-      width: this.config.width,
-      height: this.config.height,
+      width: isMobile ? this.config.mobileViewport.width : this.config.width,
+      height: isMobile ? this.config.mobileViewport.height : this.config.height,
       isMobile,
     });
-
     if (isMobile) {
       page.setUserAgent(MOBILE_USERAGENT);
     }

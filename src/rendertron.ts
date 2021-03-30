@@ -1,15 +1,14 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import koaCompress from 'koa-compress';
+import koaLogger from 'koa-logger';
 import route from 'koa-route';
 import koaSend from 'koa-send';
-import koaLogger from 'koa-logger';
 import path from 'path';
 import puppeteer from 'puppeteer';
 import url from 'url';
-
-import { Renderer, ScreenshotError } from './renderer';
 import { Config, ConfigManager } from './config';
+import { Renderer, ScreenshotError } from './renderer';
 
 /**
  * Rendertron rendering service. This runs the server which routes rendering

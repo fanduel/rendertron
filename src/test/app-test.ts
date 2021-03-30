@@ -15,13 +15,12 @@
  */
 
 import test, { ExecutionContext } from 'ava';
+import fs from 'fs';
 import Koa from 'koa';
 import koaStatic from 'koa-static';
+import os from 'os';
 import path from 'path';
 import request from 'supertest';
-import fs from 'fs';
-import os from 'os';
-
 import { Rendertron } from '../rendertron';
 
 const app = new Koa();
@@ -254,6 +253,10 @@ test('whitelist ensures other urls do not get rendered', async (t: ExecutionCont
     renderOnly: [testBase],
     closeBrowser: false,
     restrictedUrlPattern: null,
+    mobileViewport: {
+      width: 1000,
+      height: 1000,
+    },
   };
   const server = request(await new Rendertron().initialize(mockConfig));
 
@@ -287,6 +290,10 @@ test('endpont for invalidating memory cache works if configured', async (t: Exec
     renderOnly: [],
     closeBrowser: false,
     restrictedUrlPattern: null,
+    mobileViewport: {
+      width: 1000,
+      height: 1000,
+    },
   };
   const cached_server = request(await new Rendertron().initialize(mockConfig));
   const test_url = `${testBase}basic-script.html`;
@@ -333,6 +340,10 @@ test('endpont for invalidating filesystem cache works if configured', async (t: 
     renderOnly: [],
     closeBrowser: false,
     restrictedUrlPattern: null,
+    mobileViewport: {
+      width: 1000,
+      height: 1000,
+    },
   };
   const cached_server = request(await new Rendertron().initialize(mock_config));
   const test_url = `/render/${testBase}basic-script.html`;
@@ -384,6 +395,10 @@ test('http header should be set via config', async (t: ExecutionContext) => {
     renderOnly: [],
     closeBrowser: false,
     restrictedUrlPattern: null,
+    mobileViewport: {
+      width: 1000,
+      height: 1000,
+    },
   };
   server = request(await rendertron.initialize(mock_config));
   await app.listen(1237);
@@ -414,6 +429,10 @@ test.serial(
       renderOnly: [],
       closeBrowser: false,
       restrictedUrlPattern: null,
+      mobileViewport: {
+        width: 1000,
+        height: 1000,
+      },
     };
     const cached_server = request(
       await new Rendertron().initialize(mock_config)
@@ -467,6 +486,10 @@ test.serial(
       renderOnly: [],
       closeBrowser: false,
       restrictedUrlPattern: null,
+      mobileViewport: {
+        width: 1000,
+        height: 1000,
+      },
     };
     const cached_server = request(
       await new Rendertron().initialize(mock_config)
@@ -546,17 +569,23 @@ test('urls mathing pattern are restricted', async (t) => {
     renderOnly: [],
     closeBrowser: false,
     restrictedUrlPattern: '.*(\\.test.html)($|\\?)',
+    mobileViewport: {
+      width: 1000,
+      height: 1000,
+    },
   };
-  const cached_server = request(
-    await new Rendertron().initialize(mock_config)
-  );
+  const cached_server = request(await new Rendertron().initialize(mock_config));
   await app.listen(1240);
   // Make a restriced request
-  let res = await cached_server.get(`/render/${testBase}restrict-test.test.html`);
+  let res = await cached_server.get(
+    `/render/${testBase}restrict-test.test.html`
+  );
   t.is(res.status, 400);
   t.is(res.header['x-renderer'], 'rendertron');
 
-  res = await cached_server.get(`/render/${testBase}restrict-test.test.html?hello=world`);
+  res = await cached_server.get(
+    `/render/${testBase}restrict-test.test.html?hello=world`
+  );
   t.is(res.status, 400);
   t.is(res.header['x-renderer'], 'rendertron');
 
@@ -572,4 +601,3 @@ test('urls mathing pattern are restricted', async (t) => {
   await cached_server.get(`/invalidate/`);
   fs.rmdirSync(path.join(os.tmpdir(), 'rendertron-test-cache'));
 });
-

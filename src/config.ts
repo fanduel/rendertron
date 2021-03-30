@@ -20,8 +20,8 @@
 'use strict';
 
 import * as fse from 'fs-extra';
-import * as path from 'path';
 import * as os from 'os';
+import * as path from 'path';
 
 const CONFIG_PATH = path.resolve(__dirname, '../config.json');
 
@@ -39,6 +39,10 @@ export type Config = {
   renderOnly: Array<string>;
   closeBrowser: boolean;
   restrictedUrlPattern: string | null;
+  mobileViewport: {
+    width: number;
+    height: number;
+  };
 };
 
 export class ConfigManager {
@@ -59,7 +63,11 @@ export class ConfigManager {
     puppeteerArgs: ['--no-sandbox'],
     renderOnly: [],
     closeBrowser: false,
-    restrictedUrlPattern: null
+    restrictedUrlPattern: null,
+    mobileViewport: {
+      width: 1000,
+      height: 1000,
+    },
   };
 
   static async getConfiguration(): Promise<Config> {
