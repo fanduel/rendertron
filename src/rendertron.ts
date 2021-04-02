@@ -26,13 +26,13 @@ export class Rendertron {
       create() {
         return puppeteer.launch({ args: config.puppeteerArgs })
       },
+    
     destroy(browser: puppeteer.Browser) {      
         return browser.close();
       }
     }, {
       min: 2,
       max: 10,
-      testOnBorrow: true,
       acquireTimeoutMillis: 15000
     })
     // const browser = await puppeteer.launch({ args: config.puppeteerArgs });
