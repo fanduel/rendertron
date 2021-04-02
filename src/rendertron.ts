@@ -33,7 +33,8 @@ export class Rendertron {
     }, {
       min: 2,
       max: 10,
-      acquireTimeoutMillis: 15000
+      acquireTimeoutMillis: 5000,
+      autostart: true
     })
     // const browser = await puppeteer.launch({ args: config.puppeteerArgs });
 
