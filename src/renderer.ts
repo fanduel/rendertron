@@ -1,5 +1,6 @@
+import { Pool } from 'generic-pool';
 import { dirname } from 'path';
-import puppeteer, { ScreenshotOptions } from 'puppeteer';
+import puppeteer, { Browser, ScreenshotOptions } from 'puppeteer';
 import url from 'url';
 import { Config } from './config';
 
@@ -22,11 +23,11 @@ const MOBILE_USERAGENT =
  * APIs that are able to handle web components and PWAs.
  */
 export class Renderer {
-  private browser: puppeteer.Browser;
+  private pool: Pool<Browser>
   private config: Config;
 
-  constructor(browser: puppeteer.Browser, config: Config) {
-    this.browser = browser;
+  constructor(pool: Pool<Browser>, config: Config) {
+    this.pool = pool;
     this.config = config;
   }
 
@@ -92,8 +93,8 @@ export class Renderer {
         document.head.insertAdjacentElement('afterbegin', base);
       }
     }
-
-    const page = await this.browser.newPage();
+    const browser = await this.pool.acquire();
+    const page = await browser.newPage();
 
     // Page may reload when setting isMobile
     // https://github.com/GoogleChrome/puppeteer/blob/v1.10.0/docs/api.md#pagesetviewportviewport
@@ -163,9 +164,10 @@ export class Renderer {
       // This should only occur when the page is about:blank. See
       // https://github.com/GoogleChrome/puppeteer/blob/v1.5.0/docs/api.md#pagegotourl-options.
       await page.close();
-      if (this.config.closeBrowser) {
-        await this.browser.close();
-      }
+      await this.pool.release(browser);
+      // if (this.config.closeBrowser) {
+      //   await browser.close();
+      // }
       return { status: 400, customHeaders: new Map(), content: '' };
     }
 
@@ -173,9 +175,7 @@ export class Renderer {
     // https://cloud.google.com/compute/docs/storing-retrieving-metadata.
     if (response.headers()['metadata-flavor'] === 'Google') {
       await page.close();
-      if (this.config.closeBrowser) {
-        await this.browser.close();
-      }
+      await this.pool.release(browser);
       return { status: 403, customHeaders: new Map(), content: '' };
     }
 
@@ -232,9 +232,7 @@ export class Renderer {
     const result = (await page.content()) as string;
 
     await page.close();
-    if (this.config.closeBrowser) {
-      await this.browser.close();
-    }
+    await this.pool.release(browser);
     return {
       status: statusCode,
       customHeaders: customHeaders
@@ -251,7 +249,8 @@ export class Renderer {
     options?: ScreenshotOptions,
     timezoneId?: string
   ): Promise<Buffer> {
-    const page = await this.browser.newPage();
+    const browser = await this.pool.acquire();
+    const page = await browser.newPage();
 
     // Page may reload when setting isMobile
     // https://github.com/GoogleChrome/puppeteer/blob/v1.10.0/docs/api.md#pagesetviewportviewport
@@ -293,9 +292,7 @@ export class Renderer {
 
     if (!response) {
       await page.close();
-      if (this.config.closeBrowser) {
-        await this.browser.close();
-      }
+    await this.pool.release(browser);
       throw new ScreenshotError('NoResponse');
     }
 
@@ -303,9 +300,7 @@ export class Renderer {
     // https://cloud.google.com/compute/docs/storing-retrieving-metadata.
     if (response.headers()['metadata-flavor'] === 'Google') {
       await page.close();
-      if (this.config.closeBrowser) {
-        await this.browser.close();
-      }
+    await this.pool.release(browser);
       throw new ScreenshotError('Forbidden');
     }
 
@@ -318,9 +313,7 @@ export class Renderer {
     // https://github.com/GoogleChrome/puppeteer/blob/v1.8.0/docs/api.md#pagescreenshotoptions
     const buffer = (await page.screenshot(screenshotOptions)) as Buffer;
     await page.close();
-    if (this.config.closeBrowser) {
-      await this.browser.close();
-    }
+    await this.pool.release(browser);
     return buffer;
   }
 }

@@ -1,3 +1,4 @@
+import genericPool from 'generic-pool';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import koaCompress from 'koa-compress';
@@ -9,7 +10,6 @@ import puppeteer from 'puppeteer';
 import url from 'url';
 import { Config, ConfigManager } from './config';
 import { Renderer, ScreenshotError } from './renderer';
-
 /**
  * Rendertron rendering service. This runs the server which routes rendering
  * requests through to the renderer.
@@ -22,13 +22,26 @@ export class Rendertron {
   private host = process.env.HOST || null;
 
   async createRenderer(config: Config) {
-    const browser = await puppeteer.launch({ args: config.puppeteerArgs });
+    let pool = genericPool.createPool({
+      create() {
+        return puppeteer.launch({ args: config.puppeteerArgs })
+      },
+    destroy(browser: puppeteer.Browser) {      
+        return browser.close();
+      }
+    }, {
+      min: 2,
+      max: 10,
+      testOnBorrow: true,
+      acquireTimeoutMillis: 15000
+    })
+    // const browser = await puppeteer.launch({ args: config.puppeteerArgs });
 
-    browser.on('disconnected', () => {
-      this.createRenderer(config);
-    });
+    // browser.on('disconnected', () => {
+    //   this.createRenderer(config);
+    // });
 
-    this.renderer = new Renderer(browser, config);
+    this.renderer = new Renderer(pool, config);
   }
 
   async initialize(config?: Config) {
