@@ -136,6 +136,8 @@ export interface Options {
    * Defaults to `"X-Forwarded-Host"`.
    */
   forwardedHostHeader?: string;
+
+  protocol?: string;
 }
 
 /**
@@ -180,8 +182,9 @@ export function makeMiddleware(options: Options): express.Handler {
       forwardedHost && allowedForwardedHosts.includes(forwardedHost)
         ? forwardedHost
         : req.get('host');
-    const incomingUrl = req.protocol + '://' + encodeURIComponent(host + req.originalUrl);
-    let renderUrl = proxyUrl + incomingUrl;
+    const protocol = options.protocol || req.protocol;
+    const incomingUrl = protocol + '://' + host + req.originalUrl;
+    let renderUrl = proxyUrl + encodeURIComponent(incomingUrl);
     if (isMobileUserAgent) {
       renderUrl += '/?mobile';
     }
