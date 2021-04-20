@@ -20,11 +20,11 @@
 'use strict';
 
 import { createHash } from 'crypto';
-
 import * as fs from 'fs';
-import * as path from 'path';
 import * as Koa from 'koa';
+import * as path from 'path';
 import { Config } from './config';
+
 
 type CacheContent = {
   saved: Date;
@@ -229,10 +229,11 @@ export class FilesystemCache {
     ) {
 
       const cacheKey = this.sanitizeKey(ctx.url);
+      const useCache = 'no-cache' in ctx.query ? false : true;
       // key is hashed crudely
       const key = this.hashCode(cacheKey);
       const content = await this.getCachedContent(ctx, key);
-      if (content) {
+      if (content && useCache) {
         // Serve cached content if its not expired.
         if (
           content.expires.getTime() >= new Date().getTime() ||
