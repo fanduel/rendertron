@@ -32,7 +32,7 @@ export class Rendertron {
       }
     }, {
       min: 2,
-      max: 20,
+      max: 15,
       acquireTimeoutMillis: 5000,
       autostart: true
     })
