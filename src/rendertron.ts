@@ -32,7 +32,7 @@ export class Rendertron {
       }
     }, {
       min: 2,
-      max: 50,
+      max: 30,
       autostart: true
     })
     // const browser = await puppeteer.launch({ args: config.puppeteerArgs });
