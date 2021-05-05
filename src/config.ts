@@ -43,6 +43,8 @@ export type Config = {
     width: number;
     height: number;
   };
+  minBrowsers: number;
+  maxBrowsers: number;
 };
 
 export class ConfigManager {
@@ -68,6 +70,8 @@ export class ConfigManager {
       width: 1000,
       height: 1000,
     },
+    minBrowsers: 2,
+    maxBrowsers: 10
   };
 
   static async getConfiguration(): Promise<Config> {

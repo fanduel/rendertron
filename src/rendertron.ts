@@ -31,15 +31,10 @@ export class Rendertron {
         return browser.close();
       }
     }, {
-      min: 2,
-      max: 30,
+      min: config.minBrowsers,
+      max: config.maxBrowsers,
       autostart: true
     })
-    // const browser = await puppeteer.launch({ args: config.puppeteerArgs });
-
-    // browser.on('disconnected', () => {
-    //   this.createRenderer(config);
-    // });
 
     this.renderer = new Renderer(pool, config);
   }
