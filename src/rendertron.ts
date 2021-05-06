@@ -10,6 +10,7 @@ import puppeteer from 'puppeteer';
 import url from 'url';
 import { Config, ConfigManager } from './config';
 import { Renderer, ScreenshotError } from './renderer';
+require('events').EventEmitter.defaultMaxListeners = 100;
 /**
  * Rendertron rendering service. This runs the server which routes rendering
  * requests through to the renderer.
