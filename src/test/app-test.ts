@@ -257,6 +257,8 @@ test('whitelist ensures other urls do not get rendered', async (t: ExecutionCont
       width: 1000,
       height: 1000,
     },
+    minBrowsers: 2,
+    maxBrowsers: 10
   };
   const server = request(await new Rendertron().initialize(mockConfig));
 
@@ -294,6 +296,8 @@ test('endpont for invalidating memory cache works if configured', async (t: Exec
       width: 1000,
       height: 1000,
     },
+    minBrowsers: 2,
+    maxBrowsers: 10
   };
   const cached_server = request(await new Rendertron().initialize(mockConfig));
   const test_url = `${testBase}basic-script.html`;
@@ -344,6 +348,8 @@ test('endpont for invalidating filesystem cache works if configured', async (t: 
       width: 1000,
       height: 1000,
     },
+    minBrowsers: 2,
+    maxBrowsers: 10
   };
   const cached_server = request(await new Rendertron().initialize(mock_config));
   const test_url = `/render/${testBase}basic-script.html`;
@@ -399,6 +405,8 @@ test('http header should be set via config', async (t: ExecutionContext) => {
       width: 1000,
       height: 1000,
     },
+    minBrowsers: 2,
+    maxBrowsers: 10
   };
   server = request(await rendertron.initialize(mock_config));
   await app.listen(1237);
@@ -433,6 +441,8 @@ test.serial(
         width: 1000,
         height: 1000,
       },
+      minBrowsers: 2,
+      maxBrowsers: 10
     };
     const cached_server = request(
       await new Rendertron().initialize(mock_config)
@@ -490,6 +500,8 @@ test.serial(
         width: 1000,
         height: 1000,
       },
+      minBrowsers: 2,
+      maxBrowsers: 10
     };
     const cached_server = request(
       await new Rendertron().initialize(mock_config)
@@ -573,6 +585,8 @@ test('urls mathing pattern are restricted', async (t) => {
       width: 1000,
       height: 1000,
     },
+    minBrowsers: 2,
+    maxBrowsers: 10
   };
   const cached_server = request(await new Rendertron().initialize(mock_config));
   await app.listen(1240);
