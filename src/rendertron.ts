@@ -22,7 +22,7 @@ export class Rendertron {
   private host = process.env.HOST || null;
 
   async createRenderer(config: Config) {
-    const browser = await puppeteer.launch({ args: config.puppeteerArgs, headless: false });
+    const browser = await puppeteer.launch({ args: config.puppeteerArgs });
 
     browser.on('disconnected', () => {
       this.createRenderer(config);
