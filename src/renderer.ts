@@ -153,7 +153,7 @@ export class Renderer {
       // Navigate to page. Wait until there are no oustanding network requests.
       response = await page.goto(requestUrl, {
         timeout: this.config.timeout,
-        waitUntil: 'networkidle2',
+        waitUntil: 'networkidle0',
       });
     } catch (e) {
       console.error(e);
@@ -284,7 +284,7 @@ export class Renderer {
       // Navigate to page. Wait until there are no oustanding network requests.
       response = await page.goto(url, {
         timeout: this.config.timeout,
-        waitUntil: 'networkidle2',
+        waitUntil: 'networkidle0',
       });
     } catch (e) {
       console.error(e);
