@@ -92,8 +92,8 @@ export class Renderer {
         document.head.insertAdjacentElement('afterbegin', base);
       }
     }
-
-    const page = await this.browser.newPage();
+    const context = await this.browser.createIncognitoBrowserContext();
+    const page = await context.newPage();
 
     // Page may reload when setting isMobile
     // https://github.com/GoogleChrome/puppeteer/blob/v1.10.0/docs/api.md#pagesetviewportviewport
@@ -163,6 +163,7 @@ export class Renderer {
       // This should only occur when the page is about:blank. See
       // https://github.com/GoogleChrome/puppeteer/blob/v1.5.0/docs/api.md#pagegotourl-options.
       await page.close();
+      await context.close();
       if (this.config.closeBrowser) {
         await this.browser.close();
       }
@@ -173,6 +174,7 @@ export class Renderer {
     // https://cloud.google.com/compute/docs/storing-retrieving-metadata.
     if (response.headers()['metadata-flavor'] === 'Google') {
       await page.close();
+      await context.close();
       if (this.config.closeBrowser) {
         await this.browser.close();
       }
@@ -232,6 +234,7 @@ export class Renderer {
     const result = (await page.content()) as string;
 
     await page.close();
+    await context.close();
     if (this.config.closeBrowser) {
       await this.browser.close();
     }
