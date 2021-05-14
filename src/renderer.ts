@@ -57,6 +57,7 @@ export class Renderer {
      * import tags to prevent further loading of resources.
      */
     function stripPage() {
+      console.log('strip page')
       // Strip only script tags that contain JavaScript (either no type attribute or one that contains "javascript")
       const elements = document.querySelectorAll(
         'script:not([type]), script[type*="javascript"], script[type="module"], link[rel=import]'
@@ -94,7 +95,7 @@ export class Renderer {
     }
 
     const page = await this.browser.newPage();
-
+    console.log('New request')
     // Page may reload when setting isMobile
     // https://github.com/GoogleChrome/puppeteer/blob/v1.10.0/docs/api.md#pagesetviewportviewport
 
@@ -157,7 +158,7 @@ export class Renderer {
     } catch (e) {
       console.error(e);
     }
-
+    
     if (!response) {
       console.error('response does not exist');
       // This should only occur when the page is about:blank. See
@@ -230,7 +231,7 @@ export class Renderer {
 
     // Serialize page.
     const result = (await page.content()) as string;
-
+    console.log('result')
     await page.close();
     if (this.config.closeBrowser) {
       await this.browser.close();
