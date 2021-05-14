@@ -52,6 +52,8 @@ export class Renderer {
     isMobile: boolean,
     timezoneId?: string
   ): Promise<SerializedResponse> {
+
+    const browser = await puppeteer.launch({ args: this.config.puppeteerArgs});
     /**
      * Executed on the page after the page has loaded. Strips script and
      * import tags to prevent further loading of resources.
@@ -93,7 +95,7 @@ export class Renderer {
       }
     }
 
-    const page = await this.browser.newPage();
+    const page = await browser.newPage();
 
     // Page may reload when setting isMobile
     // https://github.com/GoogleChrome/puppeteer/blob/v1.10.0/docs/api.md#pagesetviewportviewport
@@ -173,6 +175,7 @@ export class Renderer {
     // https://cloud.google.com/compute/docs/storing-retrieving-metadata.
     if (response.headers()['metadata-flavor'] === 'Google') {
       await page.close();
+      await browser.close();
       if (this.config.closeBrowser) {
         await this.browser.close();
       }
@@ -230,8 +233,9 @@ export class Renderer {
 
     // Serialize page.
     const result = (await page.content()) as string;
-
+    
     await page.close();
+    await browser.close();
     if (this.config.closeBrowser) {
       await this.browser.close();
     }
