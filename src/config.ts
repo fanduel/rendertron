@@ -23,7 +23,7 @@ import * as fse from 'fs-extra';
 import * as os from 'os';
 import * as path from 'path';
 
-const CONFIG_PATH = path.resolve(__dirname, '../../config.json');
+const CONFIG_PATH = path.resolve(__dirname, '../config.json');
 
 export type Config = {
   cache: 'datastore' | 'memory' | 'filesystem' | null;
