@@ -9,7 +9,6 @@ const MOBILE_USERAGENT =
 
 export const callPage = async({ page, data }: any) => {
   const { isMobile, timezoneId, requestUrl } = data
-  console.log(data, "data")
     function stripPage() {
       // Strip only script tags that contain JavaScript (either no type attribute or one that contains "javascript")
       const elements = document.querySelectorAll(
