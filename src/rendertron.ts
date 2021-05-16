@@ -7,8 +7,10 @@ import koaSend from 'koa-send';
 import path from 'path';
 import puppeteer from 'puppeteer';
 import url from 'url';
+import { callPage } from './cluster';
 import { Config, ConfigManager } from './config';
 import { Renderer, ScreenshotError } from './renderer';
+const { Cluster } = require('puppeteer-cluster');
 
 /**
  * Rendertron rendering service. This runs the server which routes rendering
@@ -20,15 +22,26 @@ export class Rendertron {
   private renderer: Renderer | undefined;
   private port = process.env.PORT || null;
   private host = process.env.HOST || null;
-
+  private cluster: any
   async createRenderer(config: Config) {
     const browser = await puppeteer.launch({ args: config.puppeteerArgs });
 
     browser.on('disconnected', () => {
       this.createRenderer(config);
     });
-
+   
     this.renderer = new Renderer(browser, config);
+    
+  }
+
+  async createCluster(config: Config) {
+    const cluster = await Cluster.launch({
+      concurrency: Cluster.CONCURRENCY_CONTEXT,
+      maxConcurrency: 2,
+      puppeteerOptions: { args: config.puppeteerArgs }
+    });
+    this.cluster = cluster
+    console.log(this.cluster)
   }
 
   async initialize(config?: Config) {
@@ -39,7 +52,7 @@ export class Rendertron {
     this.host = this.host || this.config.host;
 
     await this.createRenderer(this.config);
-
+    await this.createCluster(this.config);
     this.app.use(koaLogger());
 
     this.app.use(koaCompress());
@@ -137,23 +150,25 @@ export class Rendertron {
     return true;
   }
 
-  async handleRenderRequest(ctx: Koa.Context, url: string) {
+  async handleRenderRequest(ctx: Koa.Context, requestUrl: string) {
     if (!this.renderer) {
       throw new Error('No renderer initalized yet.');
     }
 
-    if (this.restricted(url)) {
+    if (this.restricted(requestUrl)) {
       ctx.status = 403;
       return;
     }
 
-    const mobileVersion = 'mobile' in ctx.query ? true : false;
-
-    const serialized = await this.renderer.serialize(
-      url,
-      mobileVersion,
-      ctx.query.timezoneId
-    );
+    const isMobile = 'mobile' in ctx.query ? true : false;
+    const timezoneId = ctx.query.timezoneId
+    const data = {isMobile, timezoneId, requestUrl}
+    const serialized = await this.cluster.execute(data, callPage)
+    // const serialized = await this.renderer.serialize(
+    //   url,
+    //   mobileVersion,
+    //   ctx.query.timezoneId
+    // );
 
     for (const key in this.config.headers) {
       ctx.set(key, this.config.headers[key]);
