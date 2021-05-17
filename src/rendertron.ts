@@ -22,26 +22,25 @@ export class Rendertron {
   private renderer: Renderer | undefined;
   private port = process.env.PORT || null;
   private host = process.env.HOST || null;
-  private cluster: any
+  private cluster: any;
   async createRenderer(config: Config) {
     const browser = await puppeteer.launch({ args: config.puppeteerArgs });
 
     browser.on('disconnected', () => {
       this.createRenderer(config);
     });
-   
+
     this.renderer = new Renderer(browser, config);
-    
   }
 
   async createCluster(config: Config) {
     const cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_CONTEXT,
       maxConcurrency: 30,
-      timeout: config.timeout,
-      puppeteerOptions: { args: config.puppeteerArgs }
+      timeout: config.timeout + 10000,
+      puppeteerOptions: { args: config.puppeteerArgs },
     });
-    this.cluster = cluster
+    this.cluster = cluster;
   }
 
   async initialize(config?: Config) {
@@ -161,9 +160,9 @@ export class Rendertron {
     }
 
     const isMobile = 'mobile' in ctx.query ? true : false;
-    const timezoneId = ctx.query.timezoneId
-    const data = {isMobile, timezoneId, requestUrl}
-    const serialized = await this.cluster.execute(data, callPage)
+    const timezoneId = ctx.query.timezoneId;
+    const data = { isMobile, timezoneId, requestUrl };
+    const serialized = await this.cluster.execute(data, callPage);
     // const serialized = await this.renderer.serialize(
     //   url,
     //   mobileVersion,
