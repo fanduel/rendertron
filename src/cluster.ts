@@ -108,6 +108,7 @@ export const callPage = async({ page, data }: any) => {
         waitUntil: 'domcontentloaded',
       });
     } catch (e) {
+      await page.screenshot(`./screenshots/${requestUrl}.png`)
       console.error(e);
     }
 
