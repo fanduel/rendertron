@@ -105,6 +105,7 @@ export const callPage = async({ page, data }: any) => {
       // Navigate to page. Wait until there are no oustanding network requests.
       response = await page.goto(requestUrl, {
         timeout: config.timeout,
+        waitUntil: 'domcontentloaded',
       });
     } catch (e) {
       console.error(e);
