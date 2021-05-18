@@ -1,6 +1,6 @@
 // const { Cluster } = require('puppeteer-cluster');
 import { dirname } from 'path';
-import puppeteer from 'puppeteer';
+import puppeteer, { Page } from 'puppeteer';
 import url from 'url';
 import path from 'path';
 import { Config, ConfigManager } from './config';
@@ -8,7 +8,11 @@ const config: Config = ConfigManager.config;
 const MOBILE_USERAGENT =
   'Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.75 Mobile Safari/537.36';
 
-export const callPage = async ({ page, data }: any) => {
+type CallPageArgs = {
+  page: Page;
+  data: any;
+};
+export const callPage = async ({ page, data }: CallPageArgs) => {
   const { isMobile, timezoneId, requestUrl } = data;
   function stripPage() {
     // Strip only script tags that contain JavaScript (either no type attribute or one that contains "javascript")
@@ -109,7 +113,7 @@ export const callPage = async ({ page, data }: any) => {
 
     response = await page.goto(requestUrl, {
       timeout: config.timeout,
-      waitUntil: 'domcontentloaded',
+      waitUntil: 'networkidle0',
     });
   } catch (e) {
     await page.screenshot({

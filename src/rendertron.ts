@@ -10,7 +10,7 @@ import url from 'url';
 import { callPage } from './cluster';
 import { Config, ConfigManager } from './config';
 import { Renderer, ScreenshotError } from './renderer';
-const { Cluster } = require('puppeteer-cluster');
+import { Cluster } from 'puppeteer-cluster';
 
 /**
  * Rendertron rendering service. This runs the server which routes rendering
@@ -22,7 +22,7 @@ export class Rendertron {
   private renderer: Renderer | undefined;
   private port = process.env.PORT || null;
   private host = process.env.HOST || null;
-  private cluster: any;
+  private cluster: null | Cluster = null;
   async createRenderer(config: Config) {
     const browser = await puppeteer.launch({ args: config.puppeteerArgs });
 
@@ -162,7 +162,7 @@ export class Rendertron {
     const isMobile = 'mobile' in ctx.query ? true : false;
     const timezoneId = ctx.query.timezoneId;
     const data = { isMobile, timezoneId, requestUrl };
-    const serialized = await this.cluster.execute(data, callPage);
+    const serialized = await this.cluster?.execute(data, callPage);
     // const serialized = await this.renderer.serialize(
     //   url,
     //   mobileVersion,
