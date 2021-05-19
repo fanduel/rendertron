@@ -6,11 +6,11 @@ import route from 'koa-route';
 import koaSend from 'koa-send';
 import path from 'path';
 import puppeteer from 'puppeteer';
+import { Cluster } from 'puppeteer-cluster';
 import url from 'url';
 import { callPage } from './cluster';
 import { Config, ConfigManager } from './config';
 import { Renderer, ScreenshotError } from './renderer';
-import { Cluster } from 'puppeteer-cluster';
 
 /**
  * Rendertron rendering service. This runs the server which routes rendering
@@ -36,7 +36,7 @@ export class Rendertron {
   async createCluster(config: Config) {
     const cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: 15,
+      maxConcurrency: 50,
       timeout: config.timeout * 2,
       puppeteerOptions: { args: config.puppeteerArgs },
     });
