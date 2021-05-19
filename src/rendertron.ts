@@ -36,8 +36,8 @@ export class Rendertron {
   async createCluster(config: Config) {
     const cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: 50,
-      timeout: config.timeout * 3,
+      maxConcurrency: 15,
+      timeout: config.timeout * 2,
       puppeteerOptions: { args: config.puppeteerArgs },
     });
     this.cluster = cluster;
