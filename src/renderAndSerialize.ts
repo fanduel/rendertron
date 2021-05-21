@@ -1,5 +1,5 @@
 // const { Cluster } = require('puppeteer-cluster');
-import path, { dirname } from 'path';
+import { dirname } from 'path';
 import puppeteer, { Page } from 'puppeteer';
 import url from 'url';
 import { Config, ConfigManager } from './config';
@@ -105,21 +105,13 @@ export const renderAndSerialize = async ({ page, data }: CallPageArgs) => {
     }
   });
 
-  const parseUrlFile = url.parse(requestUrl);
-  const fileSafeUrl = path.basename(parseUrlFile.pathname ?? '');
   try {
     // Navigate to page. Wait until there are no oustanding network requests.
-
     response = await page.goto(requestUrl, {
       timeout: config.timeout,
       waitUntil: 'networkidle0',
     });
   } catch (e) {
-    await page.screenshot({
-      path: `./screenshots/${fileSafeUrl}.jpg`,
-      type: 'jpeg',
-      fullPage: true,
-    });
     console.error(e);
   }
 
