@@ -1,8 +1,7 @@
 // const { Cluster } = require('puppeteer-cluster');
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 import puppeteer, { Page } from 'puppeteer';
 import url from 'url';
-import path from 'path';
 import { Config, ConfigManager } from './config';
 const config: Config = ConfigManager.config;
 const MOBILE_USERAGENT =
@@ -12,7 +11,7 @@ type CallPageArgs = {
   page: Page;
   data: any;
 };
-export const callPage = async ({ page, data }: CallPageArgs) => {
+export const renderAndSerialize = async ({ page, data }: CallPageArgs) => {
   const { isMobile, timezoneId, requestUrl } = data;
   function stripPage() {
     // Strip only script tags that contain JavaScript (either no type attribute or one that contains "javascript")

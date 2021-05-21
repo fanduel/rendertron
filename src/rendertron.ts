@@ -8,8 +8,8 @@ import path from 'path';
 import puppeteer from 'puppeteer';
 import { Cluster } from 'puppeteer-cluster';
 import url from 'url';
-import { callPage } from './cluster';
 import { Config, ConfigManager } from './config';
+import { renderAndSerialize } from './renderAndSerialize';
 import { Renderer, ScreenshotError } from './renderer';
 
 /**
@@ -36,7 +36,7 @@ export class Rendertron {
   async createCluster(config: Config) {
     const cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: 15,
+      maxConcurrency: 20,
       timeout: config.timeout * 2,
       puppeteerOptions: { args: config.puppeteerArgs },
     });
@@ -162,13 +162,8 @@ export class Rendertron {
     const isMobile = 'mobile' in ctx.query ? true : false;
     const timezoneId = ctx.query.timezoneId;
     const data = { isMobile, timezoneId, requestUrl };
-    const serialized = await this.cluster?.execute(data, callPage);
-    // const serialized = await this.renderer.serialize(
-    //   url,
-    //   mobileVersion,
-    //   ctx.query.timezoneId
-    // );
-
+    const serialized = await this.cluster?.execute(data, renderAndSerialize);
+  
     for (const key in this.config.headers) {
       ctx.set(key, this.config.headers[key]);
     }
