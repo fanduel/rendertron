@@ -1,4 +1,3 @@
-// const { Cluster } = require('puppeteer-cluster');
 import { dirname } from 'path';
 import puppeteer, { Page } from 'puppeteer';
 import url from 'url';
@@ -49,8 +48,6 @@ export const renderAndSerialize = async ({ page, data }: CallPageArgs) => {
       document.head.insertAdjacentElement('afterbegin', base);
     }
   }
-
-  // const page = await this.browser.newPage();
 
   // Page may reload when setting isMobile
   // https://github.com/GoogleChrome/puppeteer/blob/v1.10.0/docs/api.md#pagesetviewportviewport
@@ -120,9 +117,6 @@ export const renderAndSerialize = async ({ page, data }: CallPageArgs) => {
     // This should only occur when the page is about:blank. See
     // https://github.com/GoogleChrome/puppeteer/blob/v1.5.0/docs/api.md#pagegotourl-options.
     await page.close();
-    // if (config.closeBrowser) {
-    //   await browser.close();
-    // }
     return { status: 400, customHeaders: new Map(), content: '' };
   }
 
@@ -130,9 +124,6 @@ export const renderAndSerialize = async ({ page, data }: CallPageArgs) => {
   // https://cloud.google.com/compute/docs/storing-retrieving-metadata.
   if (response.headers()['metadata-flavor'] === 'Google') {
     await page.close();
-    // if (this.config.closeBrowser) {
-    //   await this.browser.close();
-    // }
     return { status: 403, customHeaders: new Map(), content: '' };
   }
 
@@ -189,9 +180,7 @@ export const renderAndSerialize = async ({ page, data }: CallPageArgs) => {
   const result = (await page.content()) as string;
 
   await page.close();
-  // if (this.config.closeBrowser) {
-  //   await this.browser.close();
-  // }
+
   return {
     status: statusCode,
     customHeaders: customHeaders
@@ -199,15 +188,8 @@ export const renderAndSerialize = async ({ page, data }: CallPageArgs) => {
       : new Map(),
     content: result,
   };
-  // Store screenshot, do something else
 };
 
-// cluster.queue('http://www.google.com/');
-// cluster.queue('http://www.wikipedia.org/');
-// // many more pages
-
-// await cluster.idle();
-// await cluster.close();
 
 function restrictRequest(requestUrl: string): boolean {
   const parsedUrl = url.parse(requestUrl);

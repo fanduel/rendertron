@@ -153,6 +153,9 @@ export class Rendertron {
     if (!this.renderer) {
       throw new Error('No renderer initalized yet.');
     }
+    if (!this.cluster) {
+      throw new Error('No cluster initalized yet.');
+    }
 
     if (this.restricted(requestUrl)) {
       ctx.status = 403;
