@@ -6,8 +6,10 @@ import route from 'koa-route';
 import koaSend from 'koa-send';
 import path from 'path';
 import puppeteer from 'puppeteer';
+import { Cluster } from 'puppeteer-cluster';
 import url from 'url';
 import { Config, ConfigManager } from './config';
+import { renderAndSerialize } from './renderAndSerialize';
 import { Renderer, ScreenshotError } from './renderer';
 
 /**
@@ -20,7 +22,7 @@ export class Rendertron {
   private renderer: Renderer | undefined;
   private port = process.env.PORT || null;
   private host = process.env.HOST || null;
-
+  private cluster: null | Cluster = null;
   async createRenderer(config: Config) {
     const browser = await puppeteer.launch({ args: config.puppeteerArgs });
 
@@ -31,6 +33,16 @@ export class Rendertron {
     this.renderer = new Renderer(browser, config);
   }
 
+  async createCluster(config: Config) {
+    const cluster = await Cluster.launch({
+      concurrency: Cluster.CONCURRENCY_CONTEXT,
+      maxConcurrency: 15,
+      timeout: config.timeout * 2,
+      puppeteerOptions: { args: config.puppeteerArgs },
+    });
+    this.cluster = cluster;
+  }
+
   async initialize(config?: Config) {
     // Load config
     this.config = config || (await ConfigManager.getConfiguration());
@@ -39,7 +51,7 @@ export class Rendertron {
     this.host = this.host || this.config.host;
 
     await this.createRenderer(this.config);
-
+    await this.createCluster(this.config);
     this.app.use(koaLogger());
 
     this.app.use(koaCompress());
@@ -137,24 +149,24 @@ export class Rendertron {
     return true;
   }
 
-  async handleRenderRequest(ctx: Koa.Context, url: string) {
+  async handleRenderRequest(ctx: Koa.Context, requestUrl: string) {
     if (!this.renderer) {
       throw new Error('No renderer initalized yet.');
     }
+    if (!this.cluster) {
+      throw new Error('No cluster initalized yet.');
+    }
 
-    if (this.restricted(url)) {
+    if (this.restricted(requestUrl)) {
       ctx.status = 403;
       return;
     }
 
-    const mobileVersion = 'mobile' in ctx.query ? true : false;
-
-    const serialized = await this.renderer.serialize(
-      url,
-      mobileVersion,
-      ctx.query.timezoneId
-    );
-
+    const isMobile = 'mobile' in ctx.query ? true : false;
+    const timezoneId = ctx.query.timezoneId;
+    const data = { isMobile, timezoneId, requestUrl };
+    const serialized = await this.cluster?.execute(data, renderAndSerialize);
+  
     for (const key in this.config.headers) {
       ctx.set(key, this.config.headers[key]);
     }
