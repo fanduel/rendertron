@@ -186,7 +186,7 @@ export function makeMiddleware(options: Options): express.Handler {
     const incomingUrl = protocol + '://' + host + req.originalUrl;
     let renderUrl = proxyUrl + encodeURIComponent(incomingUrl);
     if (isMobileUserAgent) {
-      renderUrl += '/?mobile';
+      renderUrl += '?mobile';
     }
     if (injectShadyDom) {
       renderUrl += '?wc-inject-shadydom=true';
