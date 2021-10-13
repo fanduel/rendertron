@@ -87,16 +87,14 @@ export class FilesystemCache {
   }
 
   async clearAllCache() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       console.log(this.getDir(''), "dir")
       fs.readdir(this.getDir(''), (err, files) => {
         if (err) throw err;
         for (const file of files) {
+          console.log(path.join(this.getDir(''), file))
           fs.unlink(path.join(this.getDir(''), file), (err) => {
-            if (err) {
-              console.log(err, "ERR")
-              reject()
-            }
+            if (err) throw err;
           });
         }
         resolve();
