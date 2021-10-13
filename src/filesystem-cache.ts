@@ -20,11 +20,11 @@
 'use strict';
 
 import { createHash } from 'crypto';
-
 import * as fs from 'fs';
-import * as path from 'path';
 import * as Koa from 'koa';
+import * as path from 'path';
 import { Config } from './config';
+
 
 type CacheContent = {
   saved: Date;
@@ -88,9 +88,11 @@ export class FilesystemCache {
 
   async clearAllCache() {
     return new Promise((resolve) => {
+      console.log(this.getDir(''), "dir")
       fs.readdir(this.getDir(''), (err, files) => {
         if (err) throw err;
         for (const file of files) {
+          console.log(path.join(this.getDir(''), file))
           fs.unlink(path.join(this.getDir(''), file), (err) => {
             if (err) throw err;
           });
