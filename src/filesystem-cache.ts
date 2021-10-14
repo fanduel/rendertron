@@ -94,13 +94,10 @@ export class FilesystemCache {
         if (err) throw err;
         for (const file of files) {
           if (fs.existsSync(path.join(this.getDir(''), file))) {
-            try {
-              fs.unlinkSync(path.join(this.getDir(''), file));
+              fs.unlink(path.join(this.getDir(''), file), (err) => {
+                  console.log(err)
+              });
               console.log(`deleting: ${path.join(this.getDir(''), file)}`);
-            } catch (err) {
-              console.log(err);
-              throw err
-            }
           }
         }
         resolve();
