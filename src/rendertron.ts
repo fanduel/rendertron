@@ -99,6 +99,9 @@ export class Rendertron {
       this.app.use(
         route.get('/invalidate/', filesystemCache.clearAllCacheHandler())
       );
+      this.app.use(
+        route.get('/invalidateStaleCache/', filesystemCache.invalidateStaleCacheHandler())
+      );
       this.app.use(new FilesystemCache(this.config).middleware());
     }
 

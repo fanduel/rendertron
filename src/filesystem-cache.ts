@@ -20,11 +20,11 @@
 'use strict';
 
 import { createHash } from 'crypto';
+import { differenceInHours, minutesToHours } from 'date-fns';
 import * as fs from 'fs';
 import * as Koa from 'koa';
 import * as path from 'path';
 import { Config } from './config';
-
 
 type CacheContent = {
   saved: Date;
@@ -81,24 +81,53 @@ export class FilesystemCache {
     return this.handleClearAllCacheRequest.bind(this);
   }
 
+  invalidateStaleCacheHandler(){
+    return this.handleInvalidateStaleCache.bind(this)
+  }
+
+  private async handleInvalidateStaleCache(ctx: Koa.Context) {
+    await this.invalidateStaleCache();
+    ctx.status = 200;
+  }
+
   private async handleClearAllCacheRequest(ctx: Koa.Context) {
     await this.clearAllCache();
     ctx.status = 200;
   }
 
+  async invalidateStaleCache(){
+    return new Promise((resolve) => {
+      const now = new Date();
+      fs.readdir(this.getDir(''), (err, files) => {
+        if (err) throw err;
+          for (const file of files) {
+            if(this.isFileOlderThanSetCacheTime(file, now)){
+              fs.unlink(path.join(this.getDir(''), file), (err) => {
+                if(err) console.log(err)
+                else console.log(`deleted: ${path.join(this.getDir(''), file)}`)
+              });
+            }
+          }
+        resolve();
+      });
+    })
+  }
+
+  isFileOlderThanSetCacheTime(file: string, date: Date){
+    const fileTimeStamp = fs.statSync(path.join(this.getDir(''), file))
+    const hoursSinceLastMod = differenceInHours(date, fileTimeStamp.mtime)
+    return hoursSinceLastMod > minutesToHours(parseInt(this.cacheConfig.cacheDurationMinutes)) 
+  }
+
   async clearAllCache() {
     return new Promise((resolve) => {
-      console.log(this.getDir(''), "dir")
-      console.log(path.join(this.getDir('')))
       fs.readdir(this.getDir(''), (err, files) => {
         if (err) throw err;
         for (const file of files) {
-          if (fs.existsSync(path.join(this.getDir(''), file))) {
               fs.unlink(path.join(this.getDir(''), file), (err) => {
-                  console.log(err)
+                if(err) console.log(err)
+                else console.log(`deleted: ${path.join(this.getDir(''), file)}`)
               });
-              console.log(`deleting: ${path.join(this.getDir(''), file)}`);
-          }
         }
         resolve();
       });
