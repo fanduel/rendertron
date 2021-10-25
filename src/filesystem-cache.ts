@@ -97,11 +97,11 @@ export class FilesystemCache {
 
   async invalidateStaleCache(){
     return new Promise((resolve) => {
-      const now = new Date();
+      const dateNow = new Date();
       fs.readdir(this.getDir(''), (err, files) => {
         if (err) throw err;
           for (const file of files) {
-            if(this.isFileOlderThanSetCacheTime(file, now)){
+            if(this.isFileOlderThanSetCacheTime(file, dateNow)){
               fs.unlink(path.join(this.getDir(''), file), (err) => {
                 if(err) console.log(err)
                 else console.log(`deleted: ${path.join(this.getDir(''), file)}`)
@@ -113,9 +113,9 @@ export class FilesystemCache {
     })
   }
 
-  isFileOlderThanSetCacheTime(file: string, date: Date){
-    const fileTimeStamp = fs.statSync(path.join(this.getDir(''), file))
-    const hoursSinceLastMod = differenceInHours(date, fileTimeStamp.mtime)
+  isFileOlderThanSetCacheTime(file: string, dateNow: Date){
+    const fileStats = fs.statSync(path.join(this.getDir(''), file))
+    const hoursSinceLastMod = differenceInHours(dateNow, fileStats.mtime)
     return hoursSinceLastMod > minutesToHours(parseInt(this.cacheConfig.cacheDurationMinutes)) 
   }
 
