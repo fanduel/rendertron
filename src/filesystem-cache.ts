@@ -103,10 +103,10 @@ export class FilesystemCache {
           for (const file of files) {
             if(this.isFileOlderThanSetCacheTime(file, now)){
               console.log("deleting")
-              // fs.unlink(path.join(this.getDir(''), file), (err) => {
-              //   if(err) console.log(err)
-              //   else console.log(`deleted: ${path.join(this.getDir(''), file)}`)
-              // });
+              fs.unlink(path.join(this.getDir(''), file), (err) => {
+                if(err) console.log(err)
+                else console.log(`deleted: ${path.join(this.getDir(''), file)}`)
+              });
             }
           }
         resolve();
