@@ -102,10 +102,11 @@ export class FilesystemCache {
         if (err) throw err;
           for (const file of files) {
             if(this.isFileOlderThanSetCacheTime(file, now)){
-              fs.unlink(path.join(this.getDir(''), file), (err) => {
-                if(err) console.log(err)
-                else console.log(`deleted: ${path.join(this.getDir(''), file)}`)
-              });
+              console.log("deleting")
+              // fs.unlink(path.join(this.getDir(''), file), (err) => {
+              //   if(err) console.log(err)
+              //   else console.log(`deleted: ${path.join(this.getDir(''), file)}`)
+              // });
             }
           }
         resolve();
@@ -115,7 +116,10 @@ export class FilesystemCache {
 
   isFileOlderThanSetCacheTime(file: string, date: Date){
     const fileTimeStamp = fs.statSync(path.join(this.getDir(''), file))
+    console.log(fileTimeStamp.mtime, "timestamp")
     const hoursSinceLastMod = differenceInHours(date, fileTimeStamp.mtime)
+    console.log(hoursSinceLastMod, "hours since last mod")
+    console.log(hoursSinceLastMod > minutesToHours(parseInt(this.cacheConfig.cacheDurationMinutes)), "file can be deleted")
     return hoursSinceLastMod > minutesToHours(parseInt(this.cacheConfig.cacheDurationMinutes)) 
   }
 
