@@ -109,7 +109,7 @@ export const renderAndSerialize = async ({ page, data }: CallPageArgs) => {
       waitUntil: 'networkidle0',
     });
   } catch (e) {
-    console.error(e);
+    console.error("error with ", requestUrl, e);
   }
 
   if (!response) {
