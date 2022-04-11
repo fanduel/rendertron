@@ -3,6 +3,7 @@ import puppeteer, { ScreenshotOptions } from 'puppeteer';
 import url from 'url';
 import { Config } from './config';
 
+
 type SerializedResponse = {
   status: number;
   customHeaders: Map<string, string>;
@@ -37,10 +38,7 @@ export class Renderer {
       return true;
     }
 
-    if (
-      this.config.restrictedUrlPattern &&
-      requestUrl.match(new RegExp(this.config.restrictedUrlPattern))
-    ) {
+    if (this.config.restrictedUrlPattern && requestUrl.match(new RegExp(this.config.restrictedUrlPattern))) {
       return true;
     }
 
@@ -97,12 +95,12 @@ export class Renderer {
 
     // Page may reload when setting isMobile
     // https://github.com/GoogleChrome/puppeteer/blob/v1.10.0/docs/api.md#pagesetviewportviewport
-
     await page.setViewport({
       width: isMobile ? this.config.mobileViewport.width : this.config.width,
       height: isMobile ? this.config.mobileViewport.height : this.config.height,
       isMobile,
     });
+
     if (isMobile) {
       page.setUserAgent(MOBILE_USERAGENT);
     }
@@ -129,7 +127,7 @@ export class Renderer {
 
     await page.setRequestInterception(true);
 
-    page.addListener('request', (interceptedRequest: puppeteer.Request) => {
+    page.on('request', (interceptedRequest: puppeteer.HTTPRequest) => {
       if (this.restrictRequest(interceptedRequest.url())) {
         interceptedRequest.abort();
       } else {
@@ -137,12 +135,12 @@ export class Renderer {
       }
     });
 
-    let response: puppeteer.Response | null = null;
+    let response: puppeteer.HTTPResponse | null = null;
     // Capture main frame response. This is used in the case that rendering
     // times out, which results in puppeteer throwing an error. This allows us
     // to return a partial response for what was able to be rendered in that
     // time frame.
-    page.addListener('response', (r: puppeteer.Response) => {
+    page.on('response', (r: puppeteer.HTTPResponse) => {
       if (!response) {
         response = r;
       }
@@ -267,7 +265,7 @@ export class Renderer {
 
     await page.setRequestInterception(true);
 
-    page.addListener('request', (interceptedRequest: puppeteer.Request) => {
+    page.on('request', (interceptedRequest: puppeteer.HTTPRequest) => {
       if (this.restrictRequest(interceptedRequest.url())) {
         interceptedRequest.abort();
       } else {
@@ -279,7 +277,7 @@ export class Renderer {
       await page.emulateTimezone(timezoneId);
     }
 
-    let response: puppeteer.Response | null = null;
+    let response: puppeteer.HTTPResponse | null = null;
 
     try {
       // Navigate to page. Wait until there are no oustanding network requests.
