@@ -110,7 +110,7 @@ export const renderAndSerialize = async ({ page, data }: CallPageArgs) => {
       // Navigate to page. Wait until there are no oustanding network requests.
       response = await page.goto(requestUrl, {
         timeout: config.timeout,
-        waitUntil: 'networkidle0',
+        waitUntil: 'networkidle2',
       });
     } catch (e) {
       console.error("error with ", requestUrl, e);
