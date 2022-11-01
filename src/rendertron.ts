@@ -1,3 +1,4 @@
+import './tracer';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import koaCompress from 'koa-compress';
@@ -100,7 +101,10 @@ export class Rendertron {
         route.get('/invalidate/', filesystemCache.clearAllCacheHandler())
       );
       this.app.use(
-        route.get('/invalidateStaleCache/', filesystemCache.invalidateStaleCacheHandler())
+        route.get(
+          '/invalidateStaleCache/',
+          filesystemCache.invalidateStaleCacheHandler()
+        )
       );
       this.app.use(new FilesystemCache(this.config).middleware());
     }
@@ -169,7 +173,7 @@ export class Rendertron {
     const timezoneId = ctx.query.timezoneId;
     const data = { isMobile, timezoneId, requestUrl };
     const serialized = await this.cluster?.execute(data, renderAndSerialize);
-  
+
     for (const key in this.config.headers) {
       ctx.set(key, this.config.headers[key]);
     }
