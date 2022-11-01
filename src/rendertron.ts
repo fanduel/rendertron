@@ -1,3 +1,4 @@
+import './tracer';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import koaCompress from 'koa-compress';
@@ -11,7 +12,6 @@ import url from 'url';
 import { Config, ConfigManager } from './config';
 import { renderAndSerialize } from './renderAndSerialize';
 import { Renderer, ScreenshotError } from './renderer';
-import './tracer';
 
 /**
  * Rendertron rendering service. This runs the server which routes rendering
