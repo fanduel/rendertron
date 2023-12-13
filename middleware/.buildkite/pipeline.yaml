@@ -2,9 +2,10 @@ steps:
     - label: "Publish package"
       key: publish
       commands:
+          - cd middleware
           - npm ci
           - npm run build
-          - npm version $BUILDKITE_TAG --no-git-tag-version
+          - npm version ${$BUILDKITE_TAG#"rendertron-middleware@"} --no-git-tag-version
           - npm publish
       plugins:
           - ssh://git@github.com/fanduel/private-npm-buildkite-plugin#v2.1.0:
