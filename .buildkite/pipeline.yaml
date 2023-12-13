@@ -1,0 +1,19 @@
+steps:
+    - label: "Publish package"
+      key: publish
+      commands:
+          - npm ci
+          - npm run build
+          - npm version $BUILDKITE_TAG --no-git-tag-version
+          - npm publish
+      plugins:
+          - ssh://git@github.com/fanduel/private-npm-buildkite-plugin#v2.1.0:
+                publish: online-channels-npm
+          - docker#v5.9.0:
+                mount-buildkite-agent: true
+                propagate-environment: true
+                mount-ssh-agent: true
+                image: "077700697743.dkr.ecr.us-east-1.amazonaws.com/hub/node:18-buster-slim"
+                workdir: /app
+      agents:
+          queue: sportsbook-build
