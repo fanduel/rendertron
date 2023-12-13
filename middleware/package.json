@@ -1,6 +1,6 @@
 {
   "name": "@fanduel/rendertron-middleware",
-  "version": "0.1.8",
+  "version": "0.0.0",
   "description": "Express middleware for the rendertron service.",
   "engines": {
     "node": ">=10"
