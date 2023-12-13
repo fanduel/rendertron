@@ -48,6 +48,6 @@ properties:
 
 # Release
 
-To release this package, simply create a new release with the tag named like the following `rendertron-middleware@1.0.0`. The prefix of `rendertron-middleware@` is important of the release will not work. You can also create pre-releases by using something like `rendertron-middleware@1.0.0-beta.0`, and this will also be published to the JFrog Artifactory registry.
+To release this package, simply create a new release with the tag named like the following `rendertron-middleware@1.0.0`. The prefix of `rendertron-middleware@` is important or the release will not work. You can also create pre-releases by using something like `rendertron-middleware@1.0.0-beta.0`, and this will also be published to the JFrog Artifactory registry.
 
 You can follow the publishing of the package [here](https://buildkite.com/fanduel/rendertron-middleware-publish)
