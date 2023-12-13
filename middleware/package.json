@@ -9,7 +9,6 @@
   "types": "build/middleware.d.ts",
   "scripts": {
     "build": "tsc",
-    "prepack": "npm run build",
     "test": "npm run build && ava build/*/*-test.js"
   },
   "files": [

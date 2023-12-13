@@ -12,6 +12,7 @@
   "bin": "bin/rendertron",
   "scripts": {
     "build": "tsc",
+    "prepack": "npm run build",
     "start": "node build/rendertron.js",
     "format": "npm run format:eslint && npm run format:prettier",
     "format:eslint": "npm run lint -- --fix",
