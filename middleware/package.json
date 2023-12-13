@@ -1,6 +1,6 @@
 {
-  "name": "rendertron-middleware",
-  "version": "0.1.8",
+  "name": "@fanduel/rendertron-middleware",
+  "version": "0.0.0",
   "description": "Express middleware for the rendertron service.",
   "engines": {
     "node": ">=10"
@@ -9,7 +9,6 @@
   "types": "build/middleware.d.ts",
   "scripts": {
     "build": "tsc",
-    "prepack": "npm run build",
     "test": "npm run build && ava build/*/*-test.js"
   },
   "files": [
