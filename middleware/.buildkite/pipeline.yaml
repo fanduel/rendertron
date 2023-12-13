@@ -2,6 +2,7 @@ steps:
     - label: "Publish package"
       key: publish
       commands:
+          - mv .npmrc middleware
           - cd middleware
           - npm ci
           - npm run build
