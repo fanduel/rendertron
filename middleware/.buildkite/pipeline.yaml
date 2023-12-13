@@ -14,7 +14,7 @@ steps:
                 mount-buildkite-agent: true
                 propagate-environment: true
                 mount-ssh-agent: true
-                image: "077700697743.dkr.ecr.us-east-1.amazonaws.com/hub/node:18-buster-slim"
+                image: "077700697743.dkr.ecr.us-east-1.amazonaws.com/hub/node:14.19.0-alpine3.15"
                 workdir: /app
       agents:
           queue: sportsbook-build
